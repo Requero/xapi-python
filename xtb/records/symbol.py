@@ -1,19 +1,13 @@
-from dataclasses import dataclass
 from datetime import datetime
 from numbers import Number
-from typing import Any
 
-from xtb.common import FromDictMixin
+from xtb.records._base import BaseRecord
 
 
-@dataclass
-class SymbolRecord(FromDictMixin):
+class SymbolRecord(BaseRecord):
     """
     Values for single Symbol record
     See http://developers.xstore.pro/documentation/#SYMBOL_RECORD
-
-    exemode and quoteIdCross are not documented and had to be added
-    (21.03.2021)
     """
     ask: float
     bid: float
@@ -23,7 +17,6 @@ class SymbolRecord(FromDictMixin):
     currencyPair: bool
     currencyProfit: str
     description: str
-    exemode: Any
     expiration: datetime
     groupName: str
     high: float
@@ -44,7 +37,6 @@ class SymbolRecord(FromDictMixin):
     precision: Number
     profitMode: Number
     quoteId: Number
-    quoteIdCross: Number
     shortSelling: bool
     spreadRaw: float
     spreadTable: float

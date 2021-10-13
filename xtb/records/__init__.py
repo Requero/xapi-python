@@ -1,4 +1,32 @@
-from xtb.records._calendar import CalendarRecord
-from xtb.records._symbol import SymbolRecord
+from typing import Any, Dict, List, Type, TypeVar
 
-__all__ = ['CalendarRecord', 'SymbolRecord']
+from xtb.records._base import BaseRecord
+from xtb.records.calendar import CalendarRecord
+from xtb.records.symbol import SymbolRecord
+
+
+GenericRecord = TypeVar('GenericRecord', bound=BaseRecord)
+
+
+def cast_to(
+        type_: Type[GenericRecord],
+        value: Dict[Any, Any],
+) -> GenericRecord:
+    """
+    Casts the dictionary to BaseRecord
+    """
+    return type_.from_dict(value)
+
+
+def cast_to_collection_of(
+        type_: Type[GenericRecord],
+        value: Dict[Any, Any],
+) -> List[GenericRecord]:
+    """
+    Casts the dictionary to the list of BaseRecords
+    """
+    return list(map(type_.from_dict, value))
+
+
+__all__ = ['cast_to', 'cast_to_collection_of',
+           'CalendarRecord', 'SymbolRecord']
