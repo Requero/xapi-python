@@ -1,11 +1,9 @@
-from dataclasses import dataclass
 from datetime import datetime
 
-from xtb.common import FromDictMixin
+from xtb.records._base import BaseRecord
 
 
-@dataclass
-class CalendarRecord(FromDictMixin):
+class CalendarRecord(BaseRecord):
     """
     Values for single Calendar record
     See http://developers.xstore.pro/documentation/#CALENDAR_RECORD

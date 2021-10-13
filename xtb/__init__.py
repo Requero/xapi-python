@@ -62,7 +62,7 @@ class XtbApi:
               app_name: Optional[str] = None) -> Dict[str, Any]:
         """
         Logins the user.
-        See http://developers.xstore.pro/documentation/#login for more.
+        See http://developers.xstore.pro/documentation/#login
         """
         arguments = {'userId': user, 'password': password}
         if app_name is not None:
@@ -86,7 +86,9 @@ class XtbApi:
         See http://developers.xstore.pro/documentation/#getAllSymbols
         """
         response = self._handle_command(command='getAllSymbols')
-        return list(map(records.SymbolRecord.from_dict, response['returnData']))
+        return records.cast_to_collection_of(
+            records.SymbolRecord, response['returnData']
+        )
 
     def get_calendar(self) -> List[records.CalendarRecord]:
         """
@@ -94,12 +96,30 @@ class XtbApi:
         See http://developers.xstore.pro/documentation/#getCalendar
         """
         response = self._handle_command(command='getCalendar')
-        return list(map(records.CalendarRecord.from_dict, response['returnData']))
+        return records.cast_to_collection_of(
+            records.CalendarRecord, response['returnData']
+        )
+
+    def get_chart_last_request(self, period: int, start: int, symbol: str):
+        """
+        Returns chart info from start date to current time.
+        Note that the streaming equivalent of this function is preferred.
+        See http://developers.xstore.pro/documentation/#getChartLastRequest
+        """
+        arguments = {'info': {
+            'period': period, 'start': start, 'symbol': symbol
+        }}
+        return self._handle_command(
+            command='getChartLastRequest', arguments=arguments
+        )
+
+    def get_chart_range_request(self):
+        pass
 
     def get_symbol(self, symbol: str) -> records.SymbolRecord:
         arguments = {'symbol': symbol}
         response = self._handle_command(command='getSymbol', arguments=arguments)
-        return records.SymbolRecord.from_dict(response['returnData'])
+        return records.cast_to(records.SymbolRecord, response['returnData'])
 
     def _handle_command(
             self,
@@ -136,9 +156,12 @@ class XtbApi:
                 content.append(response[:end_idx])
                 break
             content.append(response)
+        return self._response_to_dict(content)
+
+    def _response_to_dict(self, content: List[bytes]) -> Dict[str, Any]:
+        # TODO: Raise
         mapped = map(
-            lambda x: x.decode(self.ENCODING),
-            list(itertools.chain(content))
+            lambda x: x.decode(self.ENCODING), itertools.chain(content)
         )
         return json.loads(''.join(mapped))
 
