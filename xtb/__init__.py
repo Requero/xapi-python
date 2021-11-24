@@ -1,27 +1,21 @@
-import itertools
-import json
-import socket
-import ssl
-import time
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, Type
 
 from xtb import records
-from xtb.common import get_host_address
+from xtb.connector import SyncConnector
 from xtb.exceptions import XtbApiError, XtbSocketError
 
 
 class XtbApi:
-    END_TOKEN = b'\n\n'
-    SLEEP_INTERVAL = 0.2
-    CHUNK_SIZE = 8192
-    JSON_INDENT = 4
-    ENCODING = 'utf-8'
-
-    def __init__(self, host: str = 'xapi.xtb.com', port: int = 5124):
+    def __init__(
+            self,
+            host: str = 'xapi.xtb.com',
+            port: int = 5124,
+            connector: Type[SyncConnector] = SyncConnector
+    ) -> None:
+        self._host = host
         self._port = port
-        self._host_address = get_host_address(host, port)
         self._is_logged_in = False
-        self._socket: Optional[socket.socket] = None
+        self._connector = connector()
 
     def __enter__(self):
         self.connect()
@@ -36,27 +30,21 @@ class XtbApi:
         Raises:
             XtbSocketError if connect() was called more than once before close()
         """
-        if self._socket is not None:
-            raise XtbSocketError('Tried to connect() without calling close()')
-
-        s = socket.socket()
-        s.connect((self._host_address, self._port))
-        self._socket = ssl.wrap_socket(s)
+        self._connector.connect(self._host, self._port)
 
     def close(self):
         """
-        Closes an existing connection and logouts the user
-        if login() was called before
+        Closes an existing connection.
+        Logouts the user if login() was called.
         Raises:
             XtbSocketError if close() was called before connect()
         """
-        if self._socket is None:
-            raise XtbSocketError('Tried to close() without calling connect()')
-        if self._is_logged_in:
+        if self.is_connected() and self._is_logged_in:
             self.logout()
+        self._connector.close()
 
-        self._socket.close()
-        self._socket = None
+    def is_connected(self) -> bool:
+        return self._connector.is_connected()
 
     def login(self, user: str, password: str,
               app_name: Optional[str] = None) -> Dict[str, Any]:
@@ -127,48 +115,6 @@ class XtbApi:
             command: str,
             arguments: Optional[Dict[str, Any]] = None
     ) -> Dict[str, Any]:
-
-        if self._socket is None:
-            raise XtbSocketError(
-                'Tried to use the API without calling connect() first'
-            )
-
-        data = {'command': command}
-        if arguments:
-            data['arguments'] = arguments
-
-        self._send_packet(data)
-        response = self._get_response()
-        self._raise_if_wrong_status(response)
-        return response
-
-    def _send_packet(self, data: Dict[str, Any]) -> None:
-        packet = json.dumps(data, indent=self.JSON_INDENT)
-        self._socket.send(packet.encode(self.ENCODING))
-        time.sleep(self.SLEEP_INTERVAL)
-
-    def _get_response(self) -> Dict[str, Any]:
-        content = []
-        while True:
-            response = self._socket.recv(self.CHUNK_SIZE)
-            end_idx = response.find(self.END_TOKEN)
-            if end_idx != -1:
-                content.append(response[:end_idx])
-                break
-            content.append(response)
-        return self._response_to_dict(content)
-
-    def _response_to_dict(self, content: List[bytes]) -> Dict[str, Any]:
-        # TODO: Raise
-        mapped = map(
-            lambda x: x.decode(self.ENCODING), itertools.chain(content)
+        return self._connector.handle_command(
+            command=command, arguments=arguments
         )
-        return json.loads(''.join(mapped))
-
-    @staticmethod
-    def _raise_if_wrong_status(response: Dict[str, Any]) -> None:
-        if response.get('status', True):
-            return
-        error_code = response.get('errorCode', 'Unknown Error')
-        description = response.get('errorDescr', 'Unknown Description')
-        raise XtbApiError(code=error_code, description=description)
