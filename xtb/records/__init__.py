@@ -3,9 +3,11 @@ from typing import Any, Dict, List, Type, TypeVar
 from xtb.records._base import BaseRecord
 from xtb.records.calendar import CalendarRecord
 from xtb.records.symbol import SymbolRecord
+from xtb.records.chart import ChartResponse, ChartRateInfoRecord
 
 __all__ = [
-    'cast_to', 'cast_to_collection_of', 'CalendarRecord', 'SymbolRecord'
+    'cast_to', 'cast_to_collection_of', 'CalendarRecord', 'SymbolRecord',
+    'ChartResponse', 'ChartRateInfoRecord'
 ]
 
 GenericRecord = TypeVar('GenericRecord', bound=BaseRecord)

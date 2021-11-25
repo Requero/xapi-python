@@ -2,10 +2,8 @@ import os
 
 import pytest
 from pytest_mock import MockerFixture
-from xtb import XtbApi
+from xtb import XtbApi, records
 from xtb.exceptions import XtbApiError, XtbSocketError
-from xtb.connector import SyncConnector
-from xtb.records import CalendarRecord, SymbolRecord
 
 
 USER = os.environ['USER']
@@ -77,16 +75,23 @@ def test_api_raises_error(api: XtbApi, mocker: MockerFixture):
 def test_get_all_symbols(api: XtbApi):
     symbols = api.get_all_symbols()
     assert isinstance(symbols, list)
-    assert all(isinstance(symbol, SymbolRecord) for symbol in symbols)
+    assert all(isinstance(symbol, records.SymbolRecord) for symbol in symbols)
 
 
 def test_get_calendar(api: XtbApi):
     calendar = api.get_calendar()
     assert isinstance(calendar, list)
-    assert all(isinstance(event, CalendarRecord) for event in calendar)
+    assert all(isinstance(event, records.CalendarRecord) for event in calendar)
 
 
 def test_get_symbol(api: XtbApi):
     symbol = api.get_symbol('EURPLN')
-    assert isinstance(symbol, SymbolRecord)
+    assert isinstance(symbol, records.SymbolRecord)
     assert symbol.symbol == 'EURPLN'
+
+
+def test_get_chart_last_request(api: XtbApi):
+    last_request = api.get_chart_last_request(
+        period=5, start=1637698293552, symbol='EURUSD'
+    )
+    assert isinstance(last_request, records.ChartResponse)

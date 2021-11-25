@@ -88,18 +88,24 @@ class XtbApi:
             records.CalendarRecord, response['returnData']
         )
 
-    def get_chart_last_request(self, period: int, start: int, symbol: str):
+    def get_chart_last_request(
+            self,
+            period: int,
+            start: int,
+            symbol: str
+    ) -> records.ChartResponse:
         """
         Returns chart info from start date to current time.
         Note that the streaming equivalent of this function is preferred.
         See http://developers.xstore.pro/documentation/#getChartLastRequest
         """
-        arguments = {'info': {
-            'period': period, 'start': start, 'symbol': symbol
-        }}
-        return self._handle_command(
+        arguments = {
+            'info': {'period': period, 'start': start, 'symbol': symbol}
+        }
+        response = self._handle_command(
             command='getChartLastRequest', arguments=arguments
         )
+        return records.ChartResponse(**response['returnData'])
 
     def get_chart_range_request(self):
         pass
