@@ -4,6 +4,7 @@ import pytest
 from pytest_mock import MockerFixture
 from xtb import XtbApi
 from xtb.exceptions import XtbApiError, XtbSocketError
+from xtb.connector import SyncConnector
 from xtb.records import CalendarRecord, SymbolRecord
 
 
@@ -61,8 +62,10 @@ def test_api_raises_error(api: XtbApi, mocker: MockerFixture):
     code = 'Dummy code'
     descr = 'Dummy description'
     return_value = {'status': False, 'errorCode': code, 'errorDescr': descr}
-    mocker.patch.object(api, '_send_packet')
-    mocker.patch.object(api, '_get_response', return_value=return_value)
+    mocker.patch.object(api._connector, '_send_packet')
+    mocker.patch.object(
+        api._connector, '_get_response', return_value=return_value
+    )
 
     expected_msg = f'There was an error connecting to the API. {code}: {descr}'
     with pytest.raises(XtbApiError, match=expected_msg) as ex:
@@ -86,3 +89,4 @@ def test_get_calendar(api: XtbApi):
 def test_get_symbol(api: XtbApi):
     symbol = api.get_symbol('EURPLN')
     assert isinstance(symbol, SymbolRecord)
+    assert symbol.symbol == 'EURPLN'
