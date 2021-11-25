@@ -6,21 +6,11 @@ from xtb.records.symbol import SymbolRecord
 from xtb.records.chart import ChartResponse, ChartRateInfoRecord
 
 __all__ = [
-    'cast_to', 'cast_to_collection_of', 'CalendarRecord', 'SymbolRecord',
+    'cast_to_collection_of', 'CalendarRecord', 'SymbolRecord',
     'ChartResponse', 'ChartRateInfoRecord'
 ]
 
 GenericRecord = TypeVar('GenericRecord', bound=BaseRecord)
-
-
-def cast_to(
-        type_: Type[GenericRecord],
-        value: Dict[Any, Any],
-) -> GenericRecord:
-    """
-    Casts the dictionary to BaseRecord
-    """
-    return type_.from_dict(value)
 
 
 def cast_to_collection_of(

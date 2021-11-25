@@ -105,7 +105,7 @@ class XtbApi:
         response = self._handle_command(
             command='getChartLastRequest', arguments=arguments
         )
-        return records.ChartResponse(**response['returnData'])
+        return records.ChartResponse.from_dict(response['returnData'])
 
     def get_chart_range_request(self):
         pass
@@ -113,7 +113,7 @@ class XtbApi:
     def get_symbol(self, symbol: str) -> records.SymbolRecord:
         arguments = {'symbol': symbol}
         response = self._handle_command(command='getSymbol', arguments=arguments)
-        return records.cast_to(records.SymbolRecord, response['returnData'])
+        return records.SymbolRecord.from_dict(response['returnData'])
 
     def _handle_command(
             self,

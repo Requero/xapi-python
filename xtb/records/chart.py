@@ -3,16 +3,16 @@ from __future__ import annotations
 from datetime import datetime
 from typing import List
 
-from pydantic import BaseModel
+from xtb.records._base import BaseRecord
 
 
-class ChartResponse(BaseModel):
+class ChartResponse(BaseRecord):
     digits: int
     exemode: int
     rateInfos: List[ChartRateInfoRecord]
 
 
-class ChartRateInfoRecord(BaseModel):
+class ChartRateInfoRecord(BaseRecord):
     """
     Values for Rate Info Record
     See http://developers.xstore.pro/documentation/#RATE_INFO_RECORD

@@ -1,5 +1,6 @@
 from datetime import datetime
-from numbers import Number
+# from ints import int
+from typing import Optional
 
 from xtb.records._base import BaseRecord
 
@@ -12,46 +13,46 @@ class SymbolRecord(BaseRecord):
     ask: float
     bid: float
     categoryName: str
-    contractSize: Number
+    contractSize: int
     currency: str
     currencyPair: bool
     currencyProfit: str
     description: str
-    expiration: datetime
+    expiration: Optional[datetime]
     groupName: str
     high: float
-    initialMargin: Number
-    instantMaxVolume: Number
+    initialMargin: int
+    instantMaxVolume: int
     leverage: float
     longOnly: bool
     lotMax: float
     lotMin: float
     lotStep: float
     low: float
-    marginHedged: Number
+    marginHedged: int
     marginHedgedStrong: bool
-    marginMaintenance: Number
-    marginMode: Number
+    marginMaintenance: int
+    marginMode: int
     percentage: float
-    pipsPrecision: Number
-    precision: Number
-    profitMode: Number
-    quoteId: Number
+    pipsPrecision: int
+    precision: int
+    profitMode: int
+    quoteId: int
     shortSelling: bool
     spreadRaw: float
     spreadTable: float
-    starting: datetime
-    stepRuleId: Number
-    stopsLevel: Number
-    swap_rollover3days: Number
+    starting: Optional[datetime]
+    stepRuleId: int
+    stopsLevel: int
+    swap_rollover3days: int
     swapEnable: bool
     swapLong: float
     swapShort: float
-    swapType: Number
+    swapType: int
     symbol: str
     tickSize: float
     tickValue: float
     time: datetime
     timeString: str
     trailingEnabled: bool
-    type: Number
+    type: int
