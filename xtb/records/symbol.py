@@ -1,5 +1,4 @@
 from datetime import datetime
-# from ints import int
 from typing import Optional
 
 from xtb.records._base import BaseRecord

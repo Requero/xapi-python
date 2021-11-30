@@ -95,3 +95,18 @@ def test_get_chart_last_request(api: XtbApi):
         period=5, start=1637698293552, symbol='EURUSD'
     )
     assert isinstance(last_request, records.ChartResponse)
+
+
+def test_get_chart_range_request(api: XtbApi):
+    range_request = api.get_chart_range_request(
+        end=1262944412000, period=5, start=1262944112000,
+        symbol='EURUSD', ticks=0
+    )
+    assert isinstance(range_request, records.ChartResponse)
+
+
+def test_get_commission_def(api: XtbApi):
+    comm = api.get_commission_def('EURPLN', 1)
+    assert isinstance(comm, records.CommissionRecord)
+    assert comm.commission == 0.0
+    assert comm.rateOfExchange == 1.0

@@ -99,6 +99,7 @@ class XtbApi:
         Note that the streaming equivalent of this function is preferred.
         See http://developers.xstore.pro/documentation/#getChartLastRequest
         """
+        # TODO: Possible values for period field via enum
         arguments = {
             'info': {'period': period, 'start': start, 'symbol': symbol}
         }
@@ -107,8 +108,40 @@ class XtbApi:
         )
         return records.ChartResponse.from_dict(response['returnData'])
 
-    def get_chart_range_request(self):
-        pass
+    def get_chart_range_request(
+            self,
+            end: int,
+            period: int,
+            start: int,
+            symbol: str,
+            ticks: int
+    ) -> records.ChartResponse:
+        """
+        Returns chart info with data between given start and end dates
+        Note that the streaming equivalent of this function is preferred.
+        See http://developers.xstore.pro/documentation/#getChartRangeRequest
+        """
+        arguments = {
+            'info': {
+                'end': end, 'period': period, 'start': start,
+                'symbol': symbol, 'ticks': ticks
+            }
+        }
+        response = self._handle_command(
+            command='getChartRangeRequest', arguments=arguments
+        )
+        return records.ChartResponse.from_dict(response['returnData'])
+
+    def get_commission_def(
+            self,
+            symbol: str,
+            volume: float
+    ) -> records.CommissionRecord:
+        args = {'symbol': symbol, 'volume': volume}
+        response = self._handle_command(
+            command='getCommissionDef', arguments=args
+        )
+        return records.CommissionRecord.from_dict(response['returnData'])
 
     def get_symbol(self, symbol: str) -> records.SymbolRecord:
         arguments = {'symbol': symbol}
