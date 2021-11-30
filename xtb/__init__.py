@@ -137,6 +137,10 @@ class XtbApi:
             symbol: str,
             volume: float
     ) -> records.CommissionRecord:
+        """
+        Returns calculation of commission and rate of exchange.
+        See http://developers.xstore.pro/documentation/#getCommissionDef
+        """
         args = {'symbol': symbol, 'volume': volume}
         response = self._handle_command(
             command='getCommissionDef', arguments=args
