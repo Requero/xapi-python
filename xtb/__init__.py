@@ -147,6 +147,14 @@ class XtbApi:
         )
         return records.CommissionRecord.from_dict(response['returnData'])
 
+    def get_current_user_data(self) -> records.UserRecord:
+        """
+        Returns information about account currency, and account leverage.
+        See http://developers.xstore.pro/documentation/#getCurrentUserData
+        """
+        response = self._handle_command(command='getCurrentUserData')
+        return records.UserRecord.from_dict(response['returnData'])
+
     def get_symbol(self, symbol: str) -> records.SymbolRecord:
         arguments = {'symbol': symbol}
         response = self._handle_command(command='getSymbol', arguments=arguments)

@@ -110,3 +110,8 @@ def test_get_commission_def(api: XtbApi):
     assert isinstance(comm, records.CommissionRecord)
     assert comm.commission == 0.0
     assert comm.rateOfExchange == 1.0
+
+
+def test_get_current_user(api: XtbApi):
+    user = api.get_current_user_data()
+    assert isinstance(user, records.UserRecord)

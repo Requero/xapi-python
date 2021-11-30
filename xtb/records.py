@@ -65,6 +65,9 @@ class ChartRateInfoRecord(BaseRecord):
     vol: float
 
 
+ChartResponse.update_forward_refs()
+
+
 class CommissionRecord(BaseRecord):
     """
     Values for Commision Record
@@ -72,6 +75,21 @@ class CommissionRecord(BaseRecord):
     """
     commission: float
     rateOfExchange: float
+
+
+class UserRecord(BaseRecord):
+    """
+    Values for Current User Data
+    See http://developers.xstore.pro/documentation/#getCurrentUserData
+    """
+    companyUnit: int
+    currency: str
+    group: str
+    ibAccount: bool
+    leverage: int
+    leverageMultiplier: float
+    spreadType: Optional[str]
+    trailingStop: bool
 
 
 class SymbolRecord(BaseRecord):
@@ -125,6 +143,3 @@ class SymbolRecord(BaseRecord):
     timeString: str
     trailingEnabled: bool
     type: int
-
-
-ChartResponse.update_forward_refs()
