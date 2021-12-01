@@ -92,6 +92,41 @@ class UserRecord(BaseRecord):
     trailingStop: bool
 
 
+class MarginLevelRecord(BaseRecord):
+    """
+    Values for Margin Level
+    See http://developers.xstore.pro/documentation/#getMarginLevel
+    """
+    balance: float
+    credit: float
+    currency: str
+    equity: float
+    margin: float
+    margin_free: float
+    margin_level: float
+
+
+class MarginTradeRecord(BaseRecord):
+    """
+    Values for Margin Trade
+    See http://developers.xstore.pro/documentation/#getMarginTrade
+    """
+    margin: float
+
+
+class NewsRecord(BaseRecord):
+    """
+    Vales for News
+    See http://developers.xstore.pro/documentation/#NEWS_TOPIC_RECORD
+    """
+    body: str
+    bodylen: int
+    key: str
+    time: datetime
+    timeString: str
+    title: str
+
+
 class SymbolRecord(BaseRecord):
     """
     Values for single Symbol record

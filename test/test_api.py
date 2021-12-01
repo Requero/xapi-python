@@ -115,3 +115,19 @@ def test_get_commission_def(api: XtbApi):
 def test_get_current_user(api: XtbApi):
     user = api.get_current_user_data()
     assert isinstance(user, records.UserRecord)
+
+
+def test_get_margin_level(api: XtbApi):
+    margin = api.get_margin_level()
+    assert isinstance(margin, records.MarginLevelRecord)
+
+
+def test_get_margin_trade(api: XtbApi):
+    margin_trade = api.get_margin_trade('EURPLN', 1)
+    assert isinstance(margin_trade, records.MarginTradeRecord)
+
+
+def test_get_news(api: XtbApi):
+    news = api.get_news(0, 1275993488000)
+    assert isinstance(news, list)
+    assert all(isinstance(v, records.NewsRecord) for v in news)

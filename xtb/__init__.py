@@ -155,10 +155,49 @@ class XtbApi:
         response = self._handle_command(command='getCurrentUserData')
         return records.UserRecord.from_dict(response['returnData'])
 
+    def get_margin_level(self):
+        """
+        Returns various account indicators.
+        Note that the streaming equivalent of this function is preferred.
+        See http://developers.xstore.pro/documentation/#getMarginLevel
+        """
+        response = self._handle_command(command='getMarginLevel')
+        return records.MarginLevelRecord.from_dict(response['returnData'])
+
     def get_symbol(self, symbol: str) -> records.SymbolRecord:
+        """
+        Returns information about symbol available for the user.
+        See http://developers.xstore.pro/documentation/#getSymbol
+        """
         arguments = {'symbol': symbol}
         response = self._handle_command(command='getSymbol', arguments=arguments)
         return records.SymbolRecord.from_dict(response['returnData'])
+
+    def get_margin_trade(
+            self,
+            symbol: str,
+            volume: float
+    ) -> records.MarginTradeRecord:
+        """
+        Returns expected margin for given instrument and volume.
+        See http://developers.xstore.pro/documentation/#getMarginTrade
+        """
+        args = {'symbol': symbol, 'volume': volume}
+        resp = self._handle_command(command='getMarginTrade', arguments=args)
+        return records.MarginTradeRecord.from_dict(resp['returnData'])
+
+    def get_news(self, start: int, end: int) -> List[records.NewsRecord]:
+        """
+        Returns news from trading server which were sent within specified
+        period of time.
+        Note that the streaming equivalent of this function is preferred.
+        See http://developers.xstore.pro/documentation/#getNews
+        """
+        args = {'end': end, 'start': start}
+        resp = self._handle_command(command='getNews', arguments=args)
+        return records.cast_to_collection_of(
+            records.NewsRecord, resp['returnData']
+        )
 
     def _handle_command(
             self,
