@@ -149,3 +149,11 @@ def test_get_step_rules(api: XtbApi):
     rules = api.get_step_rules()
     assert isinstance(rules, list)
     assert all(isinstance(v, records.StepRule) for v in rules)
+
+
+def test_get_tick_prices(api: XtbApi):
+    prices = api.get_tick_prices(
+        level=0, symbols=['EURPLN'], timestamp=1262944112000
+    )
+    assert isinstance(prices, records.TickPrices)
+    assert len(prices.quotations) == 1

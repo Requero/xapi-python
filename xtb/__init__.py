@@ -237,6 +237,24 @@ class XtbApi:
         response = self._handle_command('getSymbol', arguments=args)
         return records.Symbol.from_dict(response['returnData'])
 
+    def get_tick_prices(
+            self,
+            *,
+            level: int,
+            symbols: List[str],
+            timestamp: int
+    ) -> records.TickPrices:
+        """
+        Returns array of current quotations for given symbols
+        Note that the streaming equivalent of this function is preferred.
+        See http://developers.xstore.pro/documentation/#getTickPrices
+        """
+        args = {
+            'level': level, 'symbols': symbols, 'timestamp': timestamp
+        }
+        response = self._handle_command('getTickPrices', arguments=args)
+        return records.TickPrices.from_dict(response['returnData'])
+
     def _handle_command(
             self, 
             command: str, 

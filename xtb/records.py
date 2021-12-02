@@ -217,3 +217,32 @@ class Symbol(BaseRecord):
     timeString: str
     trailingEnabled: bool
     type: int
+
+
+class TickPrices(BaseRecord):
+    """
+    Values for tick prices
+    See http://developers.xstore.pro/documentation/#getTickPrices
+    """
+    quotations: List[Tick]
+
+
+class Tick(BaseRecord):
+    """
+    Value for single Tick
+    See http://developers.xstore.pro/documentation/#TICK_RECORD
+    """
+    ask: float
+    ask_volume: int = Field(alias='askVolume')
+    bid: float
+    bid_volume: float = Field(alias='bidVolume')
+    high: float
+    level: int
+    low: float
+    spread_raw: float = Field(alias='spreadRaw')
+    spread_table: float = Field(alias='spreadTable')
+    symbol: str
+    timestamp: datetime
+
+
+TickPrices.update_forward_refs()
