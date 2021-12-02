@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from typing import Any, Dict, List, Optional, Type
 
 from xtb import records
@@ -17,14 +19,14 @@ class XtbApi:
         self._is_logged_in = False
         self._connector = connector()
 
-    def __enter__(self):
+    def __enter__(self) -> XtbApi:
         self.connect()
         return self
 
     def __exit__(self, exc_type, exc_val, exc_tb):
         self.close()
 
-    def connect(self):
+    def connect(self) -> None:
         """
         Creates the connection
         Raises:
@@ -32,7 +34,7 @@ class XtbApi:
         """
         self._connector.connect(self._host, self._port)
 
-    def close(self):
+    def close(self) -> None:
         """
         Closes an existing connection.
         Logouts the user if login() was called.
@@ -46,16 +48,20 @@ class XtbApi:
     def is_connected(self) -> bool:
         return self._connector.is_connected()
 
-    def login(self, user: str, password: str,
-              app_name: Optional[str] = None) -> Dict[str, Any]:
+    def login(
+            self,
+            user: str,
+            password: str,
+            app_name: Optional[str] = None
+    ) -> Dict[str, Any]:
         """
         Logins the user.
         See http://developers.xstore.pro/documentation/#login
         """
-        arguments = {'userId': user, 'password': password}
+        args = {'userId': user, 'password': password}
         if app_name is not None:
-            arguments['appName'] = app_name
-        response = self._handle_command(command='login', arguments=arguments)
+            args['appName'] = app_name
+        response = self._handle_command('login', arguments=args)
         self._is_logged_in = True
         return response
 
@@ -64,7 +70,7 @@ class XtbApi:
         Logouts the user.
         See http://developers.xstore.pro/documentation/#logout
         """
-        response = self._handle_command(command='logout')
+        response = self._handle_command('logout')
         self._is_logged_in = False
         return response
 
@@ -73,7 +79,7 @@ class XtbApi:
         Returns array of symbols available for the user.
         See http://developers.xstore.pro/documentation/#getAllSymbols
         """
-        response = self._handle_command(command='getAllSymbols')
+        response = self._handle_command('getAllSymbols')
         return records.cast_to_collection_of(
             records.Symbol, response['returnData']
         )
@@ -83,7 +89,7 @@ class XtbApi:
         Returns calendar with market events
         See http://developers.xstore.pro/documentation/#getCalendar
         """
-        response = self._handle_command(command='getCalendar')
+        response = self._handle_command('getCalendar')
         return records.cast_to_collection_of(
             records.Calendar, response['returnData']
         )
@@ -100,12 +106,10 @@ class XtbApi:
         See http://developers.xstore.pro/documentation/#getChartLastRequest
         """
         # TODO: Possible values for period field via enum
-        arguments = {
+        args = {
             'info': {'period': period, 'start': start, 'symbol': symbol}
         }
-        response = self._handle_command(
-            command='getChartLastRequest', arguments=arguments
-        )
+        response = self._handle_command('getChartLastRequest', arguments=args)
         return records.ChartResponse.from_dict(response['returnData'])
 
     def get_chart_range_request(
@@ -121,15 +125,13 @@ class XtbApi:
         Note that the streaming equivalent of this function is preferred.
         See http://developers.xstore.pro/documentation/#getChartRangeRequest
         """
-        arguments = {
+        args = {
             'info': {
                 'end': end, 'period': period, 'start': start,
                 'symbol': symbol, 'ticks': ticks
             }
         }
-        response = self._handle_command(
-            command='getChartRangeRequest', arguments=arguments
-        )
+        response = self._handle_command('getChartRangeRequest', arguments=args)
         return records.ChartResponse.from_dict(response['returnData'])
 
     def get_commission_def(
@@ -142,9 +144,7 @@ class XtbApi:
         See http://developers.xstore.pro/documentation/#getCommissionDef
         """
         args = {'symbol': symbol, 'volume': volume}
-        response = self._handle_command(
-            command='getCommissionDef', arguments=args
-        )
+        response = self._handle_command('getCommissionDef', arguments=args)
         return records.Commission.from_dict(response['returnData'])
 
     def get_current_user_data(self) -> records.User:
@@ -152,7 +152,7 @@ class XtbApi:
         Returns information about account currency, and account leverage.
         See http://developers.xstore.pro/documentation/#getCurrentUserData
         """
-        response = self._handle_command(command='getCurrentUserData')
+        response = self._handle_command('getCurrentUserData')
         return records.User.from_dict(response['returnData'])
 
     def get_margin_level(self):
@@ -161,7 +161,7 @@ class XtbApi:
         Note that the streaming equivalent of this function is preferred.
         See http://developers.xstore.pro/documentation/#getMarginLevel
         """
-        response = self._handle_command(command='getMarginLevel')
+        response = self._handle_command('getMarginLevel')
         return records.MarginLevel.from_dict(response['returnData'])
 
     def get_margin_trade(
@@ -174,7 +174,7 @@ class XtbApi:
         See http://developers.xstore.pro/documentation/#getMarginTrade
         """
         args = {'symbol': symbol, 'volume': volume}
-        resp = self._handle_command(command='getMarginTrade', arguments=args)
+        resp = self._handle_command('getMarginTrade', arguments=args)
         return records.MarginTrade.from_dict(resp['returnData'])
 
     def get_news(self, start: int, end: int) -> List[records.News]:
@@ -185,7 +185,7 @@ class XtbApi:
         See http://developers.xstore.pro/documentation/#getNews
         """
         args = {'end': end, 'start': start}
-        resp = self._handle_command(command='getNews', arguments=args)
+        resp = self._handle_command('getNews', arguments=args)
         return records.cast_to_collection_of(
             records.News, resp['returnData']
         )
@@ -207,9 +207,7 @@ class XtbApi:
             'closePrice': close_price, 'cmd': cmd, 'openPrice': open_price,
             'symbol': symbol, 'volume': volume
         }
-        response = self._handle_command(
-            command='getProfitCalculation', arguments=args
-        )
+        response = self._handle_command('getProfitCalculation', arguments=args)
         return records.ProfitCalculation.from_dict(response['returnData'])
 
     def get_server_time(self) -> records.ServerTime:
@@ -217,7 +215,7 @@ class XtbApi:
         Returns current time on trading server.
         See http://developers.xstore.pro/documentation/#getServerTime
         """
-        response = self._handle_command(command='getServerTime')
+        response = self._handle_command('getServerTime')
         return records.ServerTime.from_dict(response['returnData'])
 
     def get_step_rules(self) -> List[records.StepRule]:
@@ -225,7 +223,7 @@ class XtbApi:
         Returns a list of step rules for DMAs
         See http://developers.xstore.pro/documentation/#getStepRules
         """
-        response = self._handle_command(command='getStepRules')
+        response = self._handle_command('getStepRules')
         return records.cast_to_collection_of(
             records.StepRule, response['returnData']
         )
@@ -235,14 +233,13 @@ class XtbApi:
         Returns information about symbol available for the user.
         See http://developers.xstore.pro/documentation/#getSymbol
         """
-        arguments = {'symbol': symbol}
-        response = self._handle_command(command='getSymbol', arguments=arguments)
+        args = {'symbol': symbol}
+        response = self._handle_command('getSymbol', arguments=args)
         return records.Symbol.from_dict(response['returnData'])
 
     def _handle_command(
-            self,
-            *,
-            command: str,
+            self, 
+            command: str, 
             arguments: Optional[Dict[str, Any]] = None
     ) -> Dict[str, Any]:
         return self._connector.handle_command(
