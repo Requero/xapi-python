@@ -68,24 +68,24 @@ class XtbApi:
         self._is_logged_in = False
         return response
 
-    def get_all_symbols(self) -> List[records.SymbolRecord]:
+    def get_all_symbols(self) -> List[records.Symbol]:
         """
         Returns array of symbols available for the user.
         See http://developers.xstore.pro/documentation/#getAllSymbols
         """
         response = self._handle_command(command='getAllSymbols')
         return records.cast_to_collection_of(
-            records.SymbolRecord, response['returnData']
+            records.Symbol, response['returnData']
         )
 
-    def get_calendar(self) -> List[records.CalendarRecord]:
+    def get_calendar(self) -> List[records.Calendar]:
         """
         Returns calendar with market events
         See http://developers.xstore.pro/documentation/#getCalendar
         """
         response = self._handle_command(command='getCalendar')
         return records.cast_to_collection_of(
-            records.CalendarRecord, response['returnData']
+            records.Calendar, response['returnData']
         )
 
     def get_chart_last_request(
@@ -136,7 +136,7 @@ class XtbApi:
             self,
             symbol: str,
             volume: float
-    ) -> records.CommissionRecord:
+    ) -> records.Commission:
         """
         Returns calculation of commission and rate of exchange.
         See http://developers.xstore.pro/documentation/#getCommissionDef
@@ -145,15 +145,15 @@ class XtbApi:
         response = self._handle_command(
             command='getCommissionDef', arguments=args
         )
-        return records.CommissionRecord.from_dict(response['returnData'])
+        return records.Commission.from_dict(response['returnData'])
 
-    def get_current_user_data(self) -> records.UserRecord:
+    def get_current_user_data(self) -> records.User:
         """
         Returns information about account currency, and account leverage.
         See http://developers.xstore.pro/documentation/#getCurrentUserData
         """
         response = self._handle_command(command='getCurrentUserData')
-        return records.UserRecord.from_dict(response['returnData'])
+        return records.User.from_dict(response['returnData'])
 
     def get_margin_level(self):
         """
@@ -162,31 +162,22 @@ class XtbApi:
         See http://developers.xstore.pro/documentation/#getMarginLevel
         """
         response = self._handle_command(command='getMarginLevel')
-        return records.MarginLevelRecord.from_dict(response['returnData'])
-
-    def get_symbol(self, symbol: str) -> records.SymbolRecord:
-        """
-        Returns information about symbol available for the user.
-        See http://developers.xstore.pro/documentation/#getSymbol
-        """
-        arguments = {'symbol': symbol}
-        response = self._handle_command(command='getSymbol', arguments=arguments)
-        return records.SymbolRecord.from_dict(response['returnData'])
+        return records.MarginLevel.from_dict(response['returnData'])
 
     def get_margin_trade(
             self,
             symbol: str,
             volume: float
-    ) -> records.MarginTradeRecord:
+    ) -> records.MarginTrade:
         """
         Returns expected margin for given instrument and volume.
         See http://developers.xstore.pro/documentation/#getMarginTrade
         """
         args = {'symbol': symbol, 'volume': volume}
         resp = self._handle_command(command='getMarginTrade', arguments=args)
-        return records.MarginTradeRecord.from_dict(resp['returnData'])
+        return records.MarginTrade.from_dict(resp['returnData'])
 
-    def get_news(self, start: int, end: int) -> List[records.NewsRecord]:
+    def get_news(self, start: int, end: int) -> List[records.News]:
         """
         Returns news from trading server which were sent within specified
         period of time.
@@ -196,8 +187,57 @@ class XtbApi:
         args = {'end': end, 'start': start}
         resp = self._handle_command(command='getNews', arguments=args)
         return records.cast_to_collection_of(
-            records.NewsRecord, resp['returnData']
+            records.News, resp['returnData']
         )
+
+    def get_profit_calculation(
+            self,
+            *,
+            close_price: float,
+            cmd: int,
+            open_price: float,
+            symbol: str,
+            volume: float
+    ) -> records.ProfitCalculation:
+        """
+        Calculates estimated profit for given deal data
+        See http://developers.xstore.pro/documentation/#getProfitCalculation
+        """
+        args = {
+            'closePrice': close_price, 'cmd': cmd, 'openPrice': open_price,
+            'symbol': symbol, 'volume': volume
+        }
+        response = self._handle_command(
+            command='getProfitCalculation', arguments=args
+        )
+        return records.ProfitCalculation.from_dict(response['returnData'])
+
+    def get_server_time(self) -> records.ServerTime:
+        """
+        Returns current time on trading server.
+        See http://developers.xstore.pro/documentation/#getServerTime
+        """
+        response = self._handle_command(command='getServerTime')
+        return records.ServerTime.from_dict(response['returnData'])
+
+    def get_step_rules(self) -> List[records.StepRule]:
+        """
+        Returns a list of step rules for DMAs
+        See http://developers.xstore.pro/documentation/#getStepRules
+        """
+        response = self._handle_command(command='getStepRules')
+        return records.cast_to_collection_of(
+            records.StepRule, response['returnData']
+        )
+
+    def get_symbol(self, symbol: str) -> records.Symbol:
+        """
+        Returns information about symbol available for the user.
+        See http://developers.xstore.pro/documentation/#getSymbol
+        """
+        arguments = {'symbol': symbol}
+        response = self._handle_command(command='getSymbol', arguments=arguments)
+        return records.Symbol.from_dict(response['returnData'])
 
     def _handle_command(
             self,

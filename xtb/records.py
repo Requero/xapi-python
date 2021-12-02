@@ -3,7 +3,7 @@ from __future__ import annotations
 from datetime import datetime
 from typing import Any, Dict, List, Optional, Type, TypeVar
 
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 
 class BaseRecord(BaseModel):
@@ -12,20 +12,20 @@ class BaseRecord(BaseModel):
         return cls(**dictionary)  # noqa
 
 
-GenericRecord = TypeVar('GenericRecord', bound=BaseRecord)
+Generic = TypeVar('Generic', bound=BaseRecord)
 
 
 def cast_to_collection_of(
-        type_: Type[GenericRecord],
+        type_: Type[Generic],
         value: Dict[Any, Any],
-) -> List[GenericRecord]:
+) -> List[Generic]:
     """
-    Casts the dictionary to the list of BaseRecords
+    Casts the dictionary to the list of Bases
     """
     return list(map(type_.from_dict, value))
 
 
-class CalendarRecord(BaseRecord):
+class Calendar(BaseRecord):
     """
     Values for single Calendar record
     See http://developers.xstore.pro/documentation/#CALENDAR_RECORD
@@ -48,12 +48,12 @@ class ChartResponse(BaseRecord):
     """
     digits: int
     exemode: int
-    rateInfos: List[ChartRateInfoRecord]
+    rateInfos: List[ChartRateInfo]
 
 
-class ChartRateInfoRecord(BaseRecord):
+class ChartRateInfo(BaseRecord):
     """
-    Values for Rate Info Record
+    Values for Rate Info 
     See http://developers.xstore.pro/documentation/#RATE_INFO_RECORD
     """
     close: float
@@ -68,16 +68,16 @@ class ChartRateInfoRecord(BaseRecord):
 ChartResponse.update_forward_refs()
 
 
-class CommissionRecord(BaseRecord):
+class Commission(BaseRecord):
     """
-    Values for Commision Record
+    Values for Commision 
     See http://developers.xstore.pro/documentation/#getCommissionDef
     """
     commission: float
     rateOfExchange: float
 
 
-class UserRecord(BaseRecord):
+class User(BaseRecord):
     """
     Values for Current User Data
     See http://developers.xstore.pro/documentation/#getCurrentUserData
@@ -92,7 +92,7 @@ class UserRecord(BaseRecord):
     trailingStop: bool
 
 
-class MarginLevelRecord(BaseRecord):
+class MarginLevel(BaseRecord):
     """
     Values for Margin Level
     See http://developers.xstore.pro/documentation/#getMarginLevel
@@ -106,7 +106,7 @@ class MarginLevelRecord(BaseRecord):
     margin_level: float
 
 
-class MarginTradeRecord(BaseRecord):
+class MarginTrade(BaseRecord):
     """
     Values for Margin Trade
     See http://developers.xstore.pro/documentation/#getMarginTrade
@@ -114,9 +114,9 @@ class MarginTradeRecord(BaseRecord):
     margin: float
 
 
-class NewsRecord(BaseRecord):
+class News(BaseRecord):
     """
-    Vales for News
+    Values for News
     See http://developers.xstore.pro/documentation/#NEWS_TOPIC_RECORD
     """
     body: str
@@ -127,7 +127,46 @@ class NewsRecord(BaseRecord):
     title: str
 
 
-class SymbolRecord(BaseRecord):
+class ProfitCalculation(BaseRecord):
+    """
+    Values for profit calculation
+    See http://developers.xstore.pro/documentation/#getProfitCalculation
+    """
+    profit: float
+
+
+class ServerTime(BaseRecord):
+    """
+    Values for server time
+    See http://developers.xstore.pro/documentation/#getServerTime
+    """
+    time: datetime
+    time_string: str = Field(alias='timeString')
+
+
+class StepRule(BaseRecord):
+    """
+    Values for step rule
+    See http://developers.xstore.pro/documentation/#STEP_RULE_RECORD
+    """
+    id: int
+    name: str
+    steps: List[Step]
+
+
+class Step(BaseRecord):
+    """
+    Values for single step
+    See http://developers.xstore.pro/documentation/#STEP_RECORD
+    """
+    from_value: float = Field(alias='fromValue')
+    step: float
+
+
+StepRule.update_forward_refs()
+
+
+class Symbol(BaseRecord):
     """
     Values for single Symbol record
     See http://developers.xstore.pro/documentation/#SYMBOL_RECORD

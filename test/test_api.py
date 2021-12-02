@@ -75,18 +75,18 @@ def test_api_raises_error(api: XtbApi, mocker: MockerFixture):
 def test_get_all_symbols(api: XtbApi):
     symbols = api.get_all_symbols()
     assert isinstance(symbols, list)
-    assert all(isinstance(symbol, records.SymbolRecord) for symbol in symbols)
+    assert all(isinstance(symbol, records.Symbol) for symbol in symbols)
 
 
 def test_get_calendar(api: XtbApi):
     calendar = api.get_calendar()
     assert isinstance(calendar, list)
-    assert all(isinstance(event, records.CalendarRecord) for event in calendar)
+    assert all(isinstance(event, records.Calendar) for event in calendar)
 
 
 def test_get_symbol(api: XtbApi):
     symbol = api.get_symbol('EURPLN')
-    assert isinstance(symbol, records.SymbolRecord)
+    assert isinstance(symbol, records.Symbol)
     assert symbol.symbol == 'EURPLN'
 
 
@@ -107,27 +107,45 @@ def test_get_chart_range_request(api: XtbApi):
 
 def test_get_commission_def(api: XtbApi):
     comm = api.get_commission_def('EURPLN', 1)
-    assert isinstance(comm, records.CommissionRecord)
+    assert isinstance(comm, records.Commission)
     assert comm.commission == 0.0
     assert comm.rateOfExchange == 1.0
 
 
 def test_get_current_user(api: XtbApi):
     user = api.get_current_user_data()
-    assert isinstance(user, records.UserRecord)
+    assert isinstance(user, records.User)
 
 
 def test_get_margin_level(api: XtbApi):
     margin = api.get_margin_level()
-    assert isinstance(margin, records.MarginLevelRecord)
+    assert isinstance(margin, records.MarginLevel)
 
 
 def test_get_margin_trade(api: XtbApi):
     margin_trade = api.get_margin_trade('EURPLN', 1)
-    assert isinstance(margin_trade, records.MarginTradeRecord)
+    assert isinstance(margin_trade, records.MarginTrade)
 
 
 def test_get_news(api: XtbApi):
     news = api.get_news(0, 1275993488000)
     assert isinstance(news, list)
-    assert all(isinstance(v, records.NewsRecord) for v in news)
+    assert all(isinstance(v, records.News) for v in news)
+
+
+def test_get_profit_calculation(api: XtbApi):
+    profit = api.get_profit_calculation(
+        close_price=1.3, cmd=0, open_price=1.2233, symbol='EURPLN', volume=1.0
+    )
+    assert isinstance(profit, records.ProfitCalculation)
+
+
+def test_get_server_time(api: XtbApi):
+    time = api.get_server_time()
+    assert isinstance(time, records.ServerTime)
+
+
+def test_get_step_rules(api: XtbApi):
+    rules = api.get_step_rules()
+    assert isinstance(rules, list)
+    assert all(isinstance(v, records.StepRule) for v in rules)
