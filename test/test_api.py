@@ -157,3 +157,38 @@ def test_get_tick_prices(api: XtbApi):
     )
     assert isinstance(prices, records.TickPrices)
     assert len(prices.quotations) == 1
+
+
+def test_get_trade_records(api: XtbApi):
+    trades = api.get_trade_records(orders=[324596785])
+    assert len(trades) == 1
+    assert isinstance(trades[0], records.Trade)
+    assert trades[0].symbol == 'ETHEREUM'
+    assert trades[0].order == 324596785
+
+
+def test_get_trades_opened_only(api: XtbApi):
+    trades = api.get_trades(opened_only=True)
+    assert len(trades) == 1
+    assert isinstance(trades[0], records.Trade)
+    assert trades[0].order == 324596785
+    assert trades[0].symbol == 'ETHEREUM'
+
+
+def test_get_trades_closed_only(api: XtbApi):
+    trades = api.get_trades(opened_only=False)
+    assert len(trades) == 1
+    assert isinstance(trades[0], records.Trade)
+    assert trades[0].symbol == 'ETHEREUM'
+    assert trades[0].order == 324596785
+
+
+def test_get_trades_history(api: XtbApi):
+    trades = api.get_trades_history(start=1638732377, end=0)
+    assert len(trades) == 2
+    assert trades[0].open_time_string == 'Sun Dec 05 21:38:03 CET 2021'
+    assert trades[0].order == 76119556
+    assert trades[1].open_time_string == 'Sun Dec 05 21:37:21 CET 2021'
+    assert trades[1].order == 76119490
+
+

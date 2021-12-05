@@ -255,6 +255,46 @@ class XtbApi:
         response = self._handle_command('getTickPrices', arguments=args)
         return records.TickPrices.from_dict(response['returnData'])
 
+    def get_trade_records(self, *, orders: List[int]) -> List[records.Trade]:
+        """
+        Returns trades listed in orders argument
+        See http://developers.xstore.pro/documentation/#getTradeRecords
+        """
+        args = {'orders': orders}
+        response = self._handle_command('getTradeRecords', arguments=args)
+        return records.cast_to_collection_of(
+            records.Trade, response['returnData']
+        )
+
+    def get_trades(self, *, opened_only: bool = False) -> List[records.Trade]:
+        """
+        Returns all users trades.
+        Note that the streaming equivalent of this function is preferred.
+        See http://developers.xstore.pro/documentation/#getTrades
+        """
+        args = {'openedOnly': opened_only}
+        response = self._handle_command('getTrades', arguments=args)
+        return records.cast_to_collection_of(
+            records.Trade, response['returnData']
+        )
+
+    def get_trades_history(
+            self,
+            *,
+            start: int,
+            end: int
+    ) -> List[records.Trade]:
+        """
+        Returns users trades which were closed within specified period of time.
+        Note that the streaming equivalent of this function is preferred.
+        See http://developers.xstore.pro/documentation/#getTradesHistory
+        """
+        args = {'start': start, 'end': end}
+        response = self._handle_command('getTradesHistory', arguments=args)
+        return records.cast_to_collection_of(
+            records.Trade, response['returnData']
+        )
+
     def _handle_command(
             self, 
             command: str, 

@@ -246,3 +246,36 @@ class Tick(BaseRecord):
 
 
 TickPrices.update_forward_refs()
+
+
+class Trade(BaseRecord):
+    """
+    A single Trade record
+    See http://developers.xstore.pro/documentation/#TRADE_RECORD
+    """
+    close_price: float
+    close_time: Optional[datetime]
+    close_time: Optional[str]
+    closed: bool
+    cmd: int
+    comment: str
+    commission: Optional[float]
+    custom_comment: Optional[str] = Field(alias='customComment')
+    digits: int
+    expiration: Optional[datetime]
+    expiration_string: Optional[str] = Field(alias='expirationString')
+    margin_rate: float
+    offset: int
+    open_price: float
+    open_time: datetime
+    open_time_string: str = Field(alias='open_timeString')
+    order: int
+    order2: int
+    position: int
+    profit: float
+    sl: float = 0
+    storage: float
+    symbol: Optional[str]
+    timestamp: datetime
+    tp: float = 0
+    volume: float
