@@ -183,6 +183,7 @@ def test_get_trades_closed_only(api: XtbApi):
     assert trades[0].order == 324596785
 
 
+@pytest.mark.skip('Need to fix the start/end times')
 def test_get_trades_history(api: XtbApi):
     trades = api.get_trades_history(start=1638732377, end=0)
     assert len(trades) == 2
@@ -192,3 +193,6 @@ def test_get_trades_history(api: XtbApi):
     assert trades[1].order == 76119490
 
 
+def test_get_trading_hours(api: XtbApi):
+    trading_hours = api.get_trading_hours(symbols=['EURPLN', 'ETHEREUM'])
+    assert len(trading_hours) == 2

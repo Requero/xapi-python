@@ -279,3 +279,36 @@ class Trade(BaseRecord):
     timestamp: datetime
     tp: float = 0
     volume: float
+
+
+class TradingHours(BaseRecord):
+    """
+    Trading hours record
+    See http://developers.xstore.pro/documentation/#TRADING_HOURS_RECORD
+    """
+    quotes: List[Quotes]
+    symbol: str
+    trading: List[Trading]
+
+
+class Quotes(BaseRecord):
+    """
+    Quotes record
+    See http://developers.xstore.pro/documentation/#QUOTES_RECORD
+    """
+    day: int
+    from_t: datetime = Field(alias='fromT')
+    to_t: datetime = Field(alias='toT')
+
+
+class Trading(BaseRecord):
+    """
+    Trading record
+    See http://developers.xstore.pro/documentation/#TRADING_RECORD
+    """
+    day: int
+    from_t: datetime = Field(alias='fromT')
+    to_t: datetime = Field(alias='toT')
+
+
+TradingHours.update_forward_refs()

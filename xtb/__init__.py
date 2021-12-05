@@ -295,6 +295,21 @@ class XtbApi:
             records.Trade, response['returnData']
         )
 
+    def get_trading_hours(
+            self,
+            *,
+            symbols: List[str]
+    ) -> List[records.TradingHours]:
+        """
+        Returns quotes and trading times.
+        See http://developers.xstore.pro/documentation/#getTradingHours
+        """
+        args = {'symbols': symbols}
+        response = self._handle_command('getTradingHours', arguments=args)
+        return records.cast_to_collection_of(
+            records.TradingHours, response['returnData']
+        )
+
     def _handle_command(
             self, 
             command: str, 
