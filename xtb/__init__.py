@@ -310,6 +310,48 @@ class XtbApi:
             records.TradingHours, response['returnData']
         )
 
+    def get_version(self) -> records.Version:
+        """
+        Returns the current API version
+        See http://developers.xstore.pro/documentation/#getVersion
+        """
+        response = self._handle_command('getVersion')
+        return records.Version.from_dict(response['returnData'])
+
+    def ping(self) -> bool:
+        """
+        Refreshes the internal state of the system
+        See http://developers.xstore.pro/documentation/#ping
+        """
+        return self._handle_command('ping').get('status', False)
+
+    def trade_transaction(
+            self,
+            *,
+            trade_info: records.TradeInfo
+    ) -> records.TradeOrder:
+        """
+        Starts the transaction.
+        See http://developers.xstore.pro/documentation/#tradeTransaction
+        """
+        args = trade_info.dict()
+        response = self._handle_command('tradeTransaction', arguments=args)
+        return records.TradeOrder.from_dict(response['returnData'])
+
+    def trade_transaction_status(
+            self,
+            *,
+            order: int
+    ) -> records.TradeStatus:
+        """
+        Returns current transaction status
+        Note that the streaming equivalent of this function is preferred.
+        See http://developers.xstore.pro/documentation/#tradeTransactionStatus
+        """
+        args = {'order': order}
+        resp = self._handle_command('tradeTransactionStatus', arguments=args)
+        return records.TradeStatus.from_dict(resp)
+
     def _handle_command(
             self, 
             command: str, 

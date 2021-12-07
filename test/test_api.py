@@ -196,3 +196,13 @@ def test_get_trades_history(api: XtbApi):
 def test_get_trading_hours(api: XtbApi):
     trading_hours = api.get_trading_hours(symbols=['EURPLN', 'ETHEREUM'])
     assert len(trading_hours) == 2
+
+
+def test_get_version(api: XtbApi):
+    version = api.get_version()
+    assert isinstance(version, records.Version)
+
+
+def test_ping(api: XtbApi):
+    ping = api.ping()
+    assert ping

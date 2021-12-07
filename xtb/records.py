@@ -312,3 +312,50 @@ class Trading(BaseRecord):
 
 
 TradingHours.update_forward_refs()
+
+
+class Version(BaseRecord):
+    """
+    API Version
+    See http://developers.xstore.pro/documentation/#getVersion
+    """
+    version: str
+
+
+class TradeInfo(BaseRecord):
+    """
+    Used as an argument for starting a transaction
+    See http://developers.xstore.pro/documentation/#TRADE_TRANS_INFO
+    """
+    cmd: int
+    custom_comment: Optional[str] = Field(alias='customComment')
+    expiration: datetime
+    offset: int
+    order: int = 0
+    price: float
+    sl: float
+    symbol: str
+    tp: float
+    type: int
+    volume: float
+
+
+class TradeOrder(BaseRecord):
+    """
+    Result after a transaction
+    See http://developers.xstore.pro/documentation/#tradeTransaction
+    """
+    order: int
+
+
+class TradeStatus(BaseRecord):
+    """
+    A status of a transaction
+    See http://developers.xstore.pro/documentation/#tradeTransactionStatus
+    """
+    ask: float
+    bid: float
+    custom_comment: Optional[str] = Field(alias='customComment')
+    message: Optional[str]
+    order: int
+    request_status: int = Field(alias='requestStatus')
