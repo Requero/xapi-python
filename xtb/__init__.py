@@ -80,9 +80,7 @@ class XtbApi:
         See http://developers.xstore.pro/documentation/#getAllSymbols
         """
         response = self._handle_command('getAllSymbols')
-        return records.cast_to_collection_of(
-            records.Symbol, response['returnData']
-        )
+        return records.Symbol.create_collection_from(response['returnData'])
 
     def get_calendar(self) -> List[records.Calendar]:
         """
@@ -90,9 +88,7 @@ class XtbApi:
         See http://developers.xstore.pro/documentation/#getCalendar
         """
         response = self._handle_command('getCalendar')
-        return records.cast_to_collection_of(
-            records.Calendar, response['returnData']
-        )
+        return records.Calendar.create_collection_from(response['returnData'])
 
     def get_chart_last_request(
             self,
@@ -186,9 +182,7 @@ class XtbApi:
         """
         args = {'end': end, 'start': start}
         resp = self._handle_command('getNews', arguments=args)
-        return records.cast_to_collection_of(
-            records.News, resp['returnData']
-        )
+        return records.News.create_collection_from(resp['returnData'])
 
     def get_profit_calculation(
             self,
@@ -224,9 +218,7 @@ class XtbApi:
         See http://developers.xstore.pro/documentation/#getStepRules
         """
         response = self._handle_command('getStepRules')
-        return records.cast_to_collection_of(
-            records.StepRule, response['returnData']
-        )
+        return records.StepRule.create_collection_from(response['returnData'])
 
     def get_symbol(self, symbol: str) -> records.Symbol:
         """
@@ -262,9 +254,7 @@ class XtbApi:
         """
         args = {'orders': orders}
         response = self._handle_command('getTradeRecords', arguments=args)
-        return records.cast_to_collection_of(
-            records.Trade, response['returnData']
-        )
+        return records.Trade.create_collection_from(response['returnData'])
 
     def get_trades(self, *, opened_only: bool = False) -> List[records.Trade]:
         """
@@ -274,9 +264,7 @@ class XtbApi:
         """
         args = {'openedOnly': opened_only}
         response = self._handle_command('getTrades', arguments=args)
-        return records.cast_to_collection_of(
-            records.Trade, response['returnData']
-        )
+        return records.Trade.create_collection_from(response['returnData'])
 
     def get_trades_history(
             self,
@@ -291,9 +279,7 @@ class XtbApi:
         """
         args = {'start': start, 'end': end}
         response = self._handle_command('getTradesHistory', arguments=args)
-        return records.cast_to_collection_of(
-            records.Trade, response['returnData']
-        )
+        return records.Trade.create_collection_from(response['returnData'])
 
     def get_trading_hours(
             self,
@@ -306,9 +292,7 @@ class XtbApi:
         """
         args = {'symbols': symbols}
         response = self._handle_command('getTradingHours', arguments=args)
-        return records.cast_to_collection_of(
-            records.TradingHours, response['returnData']
-        )
+        return records.TradingHours.create_collection_from(response['returnData'])
 
     def get_version(self) -> records.Version:
         """

@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from datetime import datetime
-from typing import Any, Dict, List, Optional, Type, TypeVar
+from typing import Any, Dict, List, Optional, TypeVar
 
 from pydantic import BaseModel, Field
 
@@ -11,18 +11,15 @@ class BaseRecord(BaseModel):
     def from_dict(cls, dictionary: Dict[Any, Any]):
         return cls(**dictionary)  # noqa
 
+    @classmethod
+    def create_collection_from(cls, value: Dict[Any, Any]) -> List[Generic]:
+        """
+        Casts the dictionary to the list of this type
+        """
+        return list(map(cls.from_dict, value))
+
 
 Generic = TypeVar('Generic', bound=BaseRecord)
-
-
-def cast_to_collection_of(
-        type_: Type[Generic],
-        value: Dict[Any, Any],
-) -> List[Generic]:
-    """
-    Casts the dictionary to the list of Bases
-    """
-    return list(map(type_.from_dict, value))
 
 
 class Calendar(BaseRecord):
